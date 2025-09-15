@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Testing
+  postgres:
+    image: postgres:15-alpine
+    container_name: excelmind-postgres-test
+    environment:
+      POSTGRES_DB: excelmind_crm_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    networks:
+      - excelmind-test-network
+    restart: unless-stopped
+
+volumes:
+  postgres_test_data:
+
+networks:
+  excelmind-test-network:
+    driver: bridge
