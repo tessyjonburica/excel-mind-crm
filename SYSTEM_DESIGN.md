@@ -8,54 +8,11 @@ ExcelMind CRM is a fullstack academic management platform built with modern web 
 
 ```mermaid
 graph TB
-    subgraph "Client Layer"
-        WEB[Web Browser]
-        MOBILE[Mobile Browser]
-    end
-    
-    subgraph "Frontend Layer"
-        NEXT[Next.js 14 Frontend]
-        UI[UI Components]
-        STATE[State Management]
-    end
-    
-    subgraph "API Gateway Layer"
-        NGINX[Nginx Load Balancer]
-    end
-    
-    subgraph "Backend Layer"
-        API[NestJS API Server]
-        AUTH[Authentication Service]
-        AI[AI Service]
-        WS[WebSocket Service]
-        PDF[PDF Generator]
-    end
-    
-    subgraph "Data Layer"
-        DB[(PostgreSQL Database)]
-        PRISMA[Prisma ORM]
-        FILES[File Storage]
-    end
-    
-    subgraph "External Services"
-        OPENAI[OpenAI API]
-        SMTP[Email Service]
-    end
-    
-    WEB --> NEXT
-    MOBILE --> NEXT
-    NEXT --> NGINX
-    NGINX --> API
-    API --> AUTH
-    API --> AI
-    API --> WS
-    API --> PDF
-    API --> PRISMA
-    PRISMA --> DB
-    AI --> OPENAI
-    API --> FILES
-    API --> SMTP
-    WS --> NEXT
+    FE[Next.js Frontend] --> BE[NestJS Backend]
+    BE --> DB[(PostgreSQL)]
+    BE -->|AI Mode| OPENAI[(OpenAI)]
+    BE -->|Mock Mode| MOCK[(Deterministic Mock)]
+    BE -->|Socket.IO| FE
 ```
 
 ## Technology Stack
@@ -76,7 +33,7 @@ graph TB
 - **PostgreSQL** - Relational database
 - **JWT** - Stateless authentication
 - **Socket.IO** - Real-time bidirectional communication
-- **PDFKit/Puppeteer** - PDF generation
+- **PDFKit** - PDF generation
 - **bcrypt** - Password hashing
 - **class-validator** - DTO validation
 
@@ -217,6 +174,26 @@ sequenceDiagram
     S->>B: GET /notifications
     B->>S: Return notification list
 ```
+
+## Transcript PDF Generation
+
+Flow:
+1. Client requests `GET /transcript/:studentId/pdf` with JWT.
+2. Backend authorizes (self/admin/lecturer-of-student).
+3. Query enrollments, assignments, submissions; compute GPA.
+4. Generate PDF with PDFKit; stream as `application/pdf`.
+
+Key details:
+- GPA weighted by course credits; letter grades derived from percentage.
+- Filename: `transcript_<student>_<id>.pdf`.
+
+## WebSocket Event Flows
+
+- Connection: client connects with JWT (auth header or handshake `auth.token`).
+- Rooms: server maps userId → socket and emits directly.
+- Events:
+  - `enrollmentStatus` (payload: { enrollmentId, status, course })
+  - `gradeUpdated` (payload: { assignmentId, submissionId, grade, maxPoints, course })
 
 ## Security Architecture
 

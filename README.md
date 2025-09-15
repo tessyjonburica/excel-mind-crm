@@ -13,8 +13,8 @@ A comprehensive fullstack web application for managing university academic workf
 - **GPA Calculation** - Automatic grade point average calculation
 
 ### Bonus Features
-- **Transcript PDF Generator** - Generate and download student transcripts
-- **Real-time Notifications** - WebSocket-based live updates
+- **Transcript PDF Generator (PDFKit)** - Generate and download student transcripts
+- **Real-time Notifications** - Socket.IO-based live updates
 
 ## 🛠️ Tech Stack
 
@@ -118,22 +118,29 @@ docker-compose exec backend npm run seed
 docker-compose logs -f
 ```
 
-## 🔐 Sample Credentials
+## 🔑 Sample Credentials
 
-### Admin
-- **Email**: admin@excelmind.edu
-- **Password**: admin123
-- **Role**: Administrator
+These are created by the seed script. You can also register your own users.
 
-### Lecturer
-- **Email**: lecturer@excelmind.edu
-- **Password**: lecturer123
-- **Role**: Lecturer
+- Admin: admin@excelmind.edu / password123
+- Lecturer: lecturer@excelmind.edu / password123
+- Student: student@excelmind.edu / password123
 
-### Student
-- **Email**: student@excelmind.edu
-- **Password**: student123
-- **Role**: Student
+## 🤖 AI Modes
+
+- Mock mode (default): set `MOCK_AI=true` (no OpenAI key required). Deterministic, safe for demos/tests.
+- OpenAI mode: set `MOCK_AI=false` and `OPENAI_API_KEY=...`. Backend will call OpenAI; ensure usage limits.
+
+Endpoints:
+- POST `/ai/recommend` → body: `{ interests: string[], currentCourses?: string[], academicLevel?: string, careerGoals?: string[] }`
+- POST `/ai/syllabus` → body: `{ topic: string, level: string, duration?: number, learningObjectives?: string[] }`
+
+## 📄 Transcript Generator
+
+- Endpoint: `GET /transcript/:studentId/pdf`
+- Auth: Bearer JWT (student can fetch their own; admins; lecturers who teach the student)
+- Response: `application/pdf` with filename `transcript_<studentName>_<studentId>.pdf`
+- Frontend: Student dashboard → “Download Transcript”
 
 ## 📚 API Endpoints
 
@@ -161,6 +168,15 @@ docker-compose logs -f
 ### Transcript
 - `GET /transcript/:studentId/pdf` - Download transcript PDF
 
+## 🔔 WebSocket Notifications
+
+- Protocol: Socket.IO with JWT handshake (auth header or `auth.token`)
+- Server: events emitted per user socket
+- Events:
+  - `enrollmentStatus` → when admin approves/rejects enrollment
+  - `gradeUpdated` → when lecturer grades submission
+- Frontend: connect using `NEXT_PUBLIC_WS_URL`; join on mount; show toast via notification provider.
+
 ## 🧪 Testing
 
 ### Backend Tests
@@ -170,12 +186,19 @@ npm run test
 npm run test:e2e
 ```
 
+Coverage goals:
+- Unit: services/helpers ≥70%
+- E2E: auth, enrollments, assignments, transcript happy paths
+
 ### Frontend Tests
 ```bash
 cd frontend
 npm run test
 npm run test:e2e
 ```
+
+Playwright E2E flows:
+- login/register, role dashboards, transcript download, notification toast
 
 ## 🐳 Docker Commands
 
