@@ -83,13 +83,13 @@ cp env.example .env
 # Edit .env with your configuration
 ```
 
-### 2. Production Deployment (Recommended)
+### 2. Production Deployment (Optional helpers included)
 ```bash
 # Linux/Mac
-./scripts/deploy.sh
+./scripts/deploy.sh   # Optional convenience script
 
 # Windows
-scripts\deploy.bat
+scripts\deploy.bat    # Optional convenience script
 ```
 
 ### 3. Development Setup
