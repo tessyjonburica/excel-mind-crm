@@ -25,6 +25,19 @@ export class EnrollmentsController {
     return this.enrollmentsService.requestEnrollment(courseId, req.user.id);
   }
 
+  // Alias to match spec: POST /courses/:id/enroll
+  @Post('/../courses/:courseId/enroll')
+  @Roles(UserRole.STUDENT)
+  @ApiOperation({ summary: 'Request enrollment in a course (alias)' })
+  @ApiResponse({ status: 201, description: 'Enrollment requested successfully' })
+  @ApiResponse({ status: 404, description: 'Course not found' })
+  @ApiResponse({ status: 409, description: 'Already enrolled or pending' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  async requestEnrollmentAlias(@Param('courseId') courseId: string, @Request() req) {
+    return this.enrollmentsService.requestEnrollment(courseId, req.user.id);
+  }
+
   @Get('pending')
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get pending enrollment requests (Admin only)' })

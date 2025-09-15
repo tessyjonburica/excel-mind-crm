@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Request, Put, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Put, Body, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -36,7 +36,7 @@ export class UsersController {
   async findAll(@Request() req) {
     // Only admins can see all users
     if (req.user.role !== 'admin') {
-      throw new Error('Forbidden');
+      throw new ForbiddenException();
     }
     return this.usersService.findAll();
   }

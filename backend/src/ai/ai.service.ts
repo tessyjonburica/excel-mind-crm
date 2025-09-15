@@ -97,8 +97,9 @@ export class AiService {
     };
   }
 
-  private getMockSyllabus(topic: string, level: string, duration: string, learningObjectives: string[]) {
-    const weeks = parseInt(duration) || 16;
+  private getMockSyllabus(topic: string, level: string, duration: number | string | undefined, learningObjectives: string[] = []) {
+    const weeksNum = typeof duration === 'number' ? duration : parseInt(String(duration || '16'));
+    const weeks = Number.isFinite(weeksNum) && weeksNum > 0 ? weeksNum : 16;
     const syllabus = {
       course: {
         title: `${topic} - ${level} Level`,

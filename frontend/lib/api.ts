@@ -11,10 +11,12 @@ class ApiClient {
   async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`
 
+    const isFormData = options.body instanceof FormData
+
     const response = await fetch(url, {
       ...options,
       headers: {
-        "Content-Type": "application/json",
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...this.getAuthHeaders(),
         ...options.headers,
       },
@@ -28,6 +30,11 @@ class ApiClient {
       throw new Error(`API Error: ${response.status}`)
     }
 
+    const contentLength = response.headers.get("content-length")
+    if (response.status === 204 || contentLength === "0") {
+      // @ts-expect-error allow void
+      return undefined
+    }
     return response.json()
   }
 
@@ -62,6 +69,16 @@ class ApiClient {
 
   async submitAssignment(assignmentId: string, data: FormData) {
     return this.request(`/assignments/${assignmentId}/submit`, {
+      method: "POST",
+      body: data,
+      headers: {
+        ...this.getAuthHeaders(),
+      },
+    })
+  }
+
+  async submitAssignmentWithFile(assignmentId: string, data: FormData) {
+    return this.request(`/assignments/${assignmentId}/submit/file`, {
       method: "POST",
       body: data,
       headers: {
