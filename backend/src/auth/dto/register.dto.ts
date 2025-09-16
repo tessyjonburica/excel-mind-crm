@@ -2,9 +2,9 @@ import { IsEmail, IsString, IsEnum, MinLength, IsNotEmpty } from 'class-validato
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum UserRole {
-  STUDENT = 'student',
-  LECTURER = 'lecturer',
-  ADMIN = 'admin',
+  student = 'student',
+  lecturer = 'lecturer',
+  admin = 'admin',
 }
 
 export class RegisterDto {
@@ -23,7 +23,7 @@ export class RegisterDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ enum: UserRole, example: UserRole.STUDENT })
+  @ApiProperty({ enum: UserRole, example: UserRole.student })
   @IsEnum(UserRole)
   role: UserRole;
 }

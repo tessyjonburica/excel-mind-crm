@@ -35,7 +35,7 @@ export class AssignmentsController {
   ) {}
 
   @Post()
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @ApiOperation({ summary: 'Create a new assignment' })
   @ApiResponse({ status: 201, description: 'Assignment created successfully' })
   @ApiResponse({ status: 404, description: 'Course not found' })
@@ -69,7 +69,7 @@ export class AssignmentsController {
   }
 
   @Patch(':id')
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @ApiOperation({ summary: 'Update assignment' })
   @ApiResponse({ status: 200, description: 'Assignment updated successfully' })
   @ApiResponse({ status: 404, description: 'Assignment not found' })
@@ -80,7 +80,7 @@ export class AssignmentsController {
   }
 
   @Delete(':id')
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @ApiOperation({ summary: 'Delete assignment' })
   @ApiResponse({ status: 200, description: 'Assignment deleted successfully' })
   @ApiResponse({ status: 404, description: 'Assignment not found' })
@@ -91,7 +91,7 @@ export class AssignmentsController {
   }
 
   @Post(':id/submit')
-  @Roles(UserRole.STUDENT)
+  @Roles(UserRole.student)
   @ApiOperation({ summary: 'Submit assignment' })
   @ApiResponse({ status: 201, description: 'Assignment submitted successfully' })
   @ApiResponse({ status: 404, description: 'Assignment not found' })
@@ -103,7 +103,7 @@ export class AssignmentsController {
   }
 
   @Post(':id/submit/file')
-  @Roles(UserRole.STUDENT)
+  @Roles(UserRole.student)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Submit assignment with file upload' })
@@ -128,7 +128,7 @@ export class AssignmentsController {
   }
 
   @Patch(':id/submissions/:submissionId/grade')
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @ApiOperation({ summary: 'Grade assignment submission' })
   @ApiResponse({ status: 200, description: 'Assignment graded successfully' })
   @ApiResponse({ status: 404, description: 'Submission not found' })

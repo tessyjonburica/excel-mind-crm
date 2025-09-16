@@ -33,7 +33,7 @@ export class CoursesController {
   ) {}
 
   @Post()
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @ApiOperation({ summary: 'Create a new course' })
   @ApiResponse({ status: 201, description: 'Course created successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -66,7 +66,7 @@ export class CoursesController {
   }
 
   @Patch(':id')
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @ApiOperation({ summary: 'Update course' })
   @ApiResponse({ status: 200, description: 'Course updated successfully' })
   @ApiResponse({ status: 404, description: 'Course not found' })
@@ -77,7 +77,7 @@ export class CoursesController {
   }
 
   @Delete(':id')
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @ApiOperation({ summary: 'Delete course' })
   @ApiResponse({ status: 200, description: 'Course deleted successfully' })
   @ApiResponse({ status: 404, description: 'Course not found' })
@@ -88,7 +88,7 @@ export class CoursesController {
   }
 
   @Post(':id/syllabus')
-  @Roles(UserRole.LECTURER, UserRole.ADMIN)
+  @Roles(UserRole.lecturer, UserRole.admin)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Upload course syllabus' })

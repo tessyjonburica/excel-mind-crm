@@ -14,7 +14,7 @@ export class EnrollmentsController {
   constructor(private readonly enrollmentsService: EnrollmentsService) {}
 
   @Post('courses/:courseId/enroll')
-  @Roles(UserRole.STUDENT)
+  @Roles(UserRole.student)
   @ApiOperation({ summary: 'Request enrollment in a course' })
   @ApiResponse({ status: 201, description: 'Enrollment requested successfully' })
   @ApiResponse({ status: 404, description: 'Course not found' })
@@ -27,7 +27,7 @@ export class EnrollmentsController {
 
   // Alias to match spec: POST /courses/:id/enroll
   @Post('/../courses/:courseId/enroll')
-  @Roles(UserRole.STUDENT)
+  @Roles(UserRole.student)
   @ApiOperation({ summary: 'Request enrollment in a course (alias)' })
   @ApiResponse({ status: 201, description: 'Enrollment requested successfully' })
   @ApiResponse({ status: 404, description: 'Course not found' })
@@ -39,7 +39,7 @@ export class EnrollmentsController {
   }
 
   @Get('pending')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.admin)
   @ApiOperation({ summary: 'Get pending enrollment requests (Admin only)' })
   @ApiResponse({ status: 200, description: 'Pending enrollments retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -49,7 +49,7 @@ export class EnrollmentsController {
   }
 
   @Get('my-enrollments')
-  @Roles(UserRole.STUDENT)
+  @Roles(UserRole.student)
   @ApiOperation({ summary: 'Get my enrollments' })
   @ApiResponse({ status: 200, description: 'Enrollments retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -59,7 +59,7 @@ export class EnrollmentsController {
   }
 
   @Patch(':id/approve')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.admin)
   @ApiOperation({ summary: 'Approve enrollment request (Admin only)' })
   @ApiResponse({ status: 200, description: 'Enrollment approved successfully' })
   @ApiResponse({ status: 404, description: 'Enrollment not found' })
@@ -71,7 +71,7 @@ export class EnrollmentsController {
   }
 
   @Patch(':id/reject')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.admin)
   @ApiOperation({ summary: 'Reject enrollment request (Admin only)' })
   @ApiResponse({ status: 200, description: 'Enrollment rejected successfully' })
   @ApiResponse({ status: 404, description: 'Enrollment not found' })
