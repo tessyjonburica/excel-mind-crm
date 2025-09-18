@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { BookOpen, FileText, Trophy, Download, Clock, CheckCircle } from "lucide-react"
+import { BookOpen, FileText, Trophy, Download, Clock, CheckCircle, Brain, Sparkles } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { useAuthStore } from "@/lib/auth-store"
 import { apiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
+import Link from "next/link"
 
 export function StudentDashboard() {
   const { user } = useAuthStore()
@@ -191,8 +192,56 @@ export function StudentDashboard() {
         </motion.div>
       </div>
 
-      {/* Recent Grades */}
+      {/* AI Assistant Quick Access */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
+        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Brain className="h-5 w-5 text-primary" />
+              <span>AI Assistant</span>
+              <Badge variant="secondary" className="ml-2">
+                <Sparkles className="h-3 w-3 mr-1" />
+                New
+              </Badge>
+            </CardTitle>
+            <CardDescription>Get personalized academic assistance with AI</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Link href="/ai-assistant">
+                <Button variant="outline" className="w-full h-auto p-4 flex flex-col items-center space-y-2">
+                  <Brain className="h-6 w-6 text-primary" />
+                  <div className="text-center">
+                    <div className="font-medium">Chat with AI</div>
+                    <div className="text-xs text-muted-foreground">Get instant help</div>
+                  </div>
+                </Button>
+              </Link>
+              <Link href="/ai-assistant?tab=recommendations">
+                <Button variant="outline" className="w-full h-auto p-4 flex flex-col items-center space-y-2">
+                  <BookOpen className="h-6 w-6 text-primary" />
+                  <div className="text-center">
+                    <div className="font-medium">Course Recommendations</div>
+                    <div className="text-xs text-muted-foreground">Find your next course</div>
+                  </div>
+                </Button>
+              </Link>
+              <Link href="/ai-assistant?tab=syllabus">
+                <Button variant="outline" className="w-full h-auto p-4 flex flex-col items-center space-y-2">
+                  <FileText className="h-6 w-6 text-primary" />
+                  <div className="text-center">
+                    <div className="font-medium">Study Planning</div>
+                    <div className="text-xs text-muted-foreground">Plan your studies</div>
+                  </div>
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Recent Grades */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
         <Card>
           <CardHeader>
             <CardTitle>Recent Grades</CardTitle>

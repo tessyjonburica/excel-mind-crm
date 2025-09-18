@@ -29,4 +29,13 @@ export class AiController {
   async generateSyllabus(@Body() syllabusDto: SyllabusGenerationDto) {
     return this.aiService.generateSyllabus(syllabusDto);
   }
+
+  @Post('chat')
+  @ApiOperation({ summary: 'Chat with AI assistant' })
+  @ApiResponse({ status: 200, description: 'AI response generated successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 400, description: 'Validation error' })
+  async chatWithAI(@Body() body: { message: string }) {
+    return this.aiService.chatWithAI(body.message);
+  }
 }

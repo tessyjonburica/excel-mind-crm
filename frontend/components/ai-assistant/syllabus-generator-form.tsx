@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { RoleGuard } from "@/components/auth/role-guard"
+import { apiClient } from "@/lib/api"
 
 const syllabusSchema = z.object({
   courseTitle: z.string().min(1, "Course title is required"),
@@ -54,10 +55,21 @@ export function SyllabusGeneratorForm() {
     setIsLoading(true)
 
     try {
-      // Simulate API call to backend AI endpoint
-      await new Promise((resolve) => setTimeout(resolve, 4000))
+      // Call the backend AI endpoint
+      const response = await apiClient.generateSyllabus({
+        topic: data.courseTitle,
+        level: data.level,
+        duration: data.duration,
+        learningObjectives: [data.objectives]
+      })
 
-      // Mock AI-generated syllabus
+      setGeneratedSyllabus(response)
+      toast({
+        title: "Syllabus Generated",
+        description: "AI has created a comprehensive syllabus based on your specifications.",
+      })
+    } catch (error) {
+      // Fallback to mock syllabus if API fails
       const mockSyllabus = {
         courseInfo: {
           title: data.courseTitle,
@@ -142,14 +154,9 @@ export function SyllabusGeneratorForm() {
 
       setGeneratedSyllabus(mockSyllabus)
       toast({
-        title: "Syllabus Generated",
-        description: "AI has created a comprehensive syllabus based on your specifications.",
-      })
-    } catch (error) {
-      toast({
-        title: "Generation Failed",
-        description: "Failed to generate syllabus. Please try again.",
-        variant: "destructive",
+        title: "Syllabus Generated (Offline Mode)",
+        description: "Using offline syllabus generation. Some features may be limited.",
+        variant: "default",
       })
     } finally {
       setIsLoading(false)

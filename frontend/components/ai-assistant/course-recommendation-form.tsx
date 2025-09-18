@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { useAuthStore } from "@/lib/auth-store"
+import { apiClient } from "@/lib/api"
 
 const recommendationSchema = z.object({
   currentMajor: z.string().min(1, "Please select your major"),
@@ -48,10 +49,21 @@ export function CourseRecommendationForm() {
     setIsLoading(true)
 
     try {
-      // Simulate API call to backend AI endpoint
-      await new Promise((resolve) => setTimeout(resolve, 3000))
+      // Call the backend AI endpoint
+      const response = await apiClient.getCourseRecommendations({
+        interests: [data.interests],
+        currentCourses: [data.currentMajor],
+        academicLevel: data.academicLevel,
+        careerGoals: [data.careerGoals]
+      })
 
-      // Mock AI recommendations
+      setRecommendations(response.recommendations)
+      toast({
+        title: "Recommendations Generated",
+        description: "AI has analyzed your profile and generated personalized course recommendations.",
+      })
+    } catch (error) {
+      // Fallback to mock recommendations if API fails
       const mockRecommendations = [
         {
           id: "1",
@@ -94,14 +106,9 @@ export function CourseRecommendationForm() {
 
       setRecommendations(mockRecommendations)
       toast({
-        title: "Recommendations Generated",
-        description: "AI has analyzed your profile and generated personalized course recommendations.",
-      })
-    } catch (error) {
-      toast({
-        title: "Recommendation Failed",
-        description: "Failed to generate recommendations. Please try again.",
-        variant: "destructive",
+        title: "Recommendations Generated (Offline Mode)",
+        description: "Using offline recommendations. Some features may be limited.",
+        variant: "default",
       })
     } finally {
       setIsLoading(false)

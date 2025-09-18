@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import { Brain, Sparkles, BookOpen, FileText, Send, Loader2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,12 +11,15 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAuthStore } from "@/lib/auth-store"
 import { useToast } from "@/hooks/use-toast"
+import { apiClient } from "@/lib/api"
 import { CourseRecommendationForm } from "./course-recommendation-form"
 import { SyllabusGeneratorForm } from "./syllabus-generator-form"
 
 export function AIAssistantContent() {
   const { user } = useAuthStore()
   const { toast } = useToast()
+  const searchParams = useSearchParams()
+  const [activeTab, setActiveTab] = useState("chat")
   const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([
     {
       role: "assistant",
@@ -25,6 +29,13 @@ export function AIAssistantContent() {
   ])
   const [currentMessage, setCurrentMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const tab = searchParams.get("tab")
+    if (tab && ["chat", "recommendations", "syllabus"].includes(tab)) {
+      setActiveTab(tab)
+    }
+  }, [searchParams])
 
   const handleSendMessage = async () => {
     if (!currentMessage.trim()) return
@@ -37,16 +48,18 @@ export function AIAssistantContent() {
     setChatMessages((prev) => [...prev, { role: "user", content: userMessage }])
 
     try {
-      // Simulate AI response - in real app, this would call the backend AI endpoint
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
+      // Call the backend AI endpoint
+      const response = await apiClient.chatWithAI(userMessage)
+      setChatMessages((prev) => [...prev, { role: "assistant", content: response.response }])
+    } catch (error) {
+      // Fallback to mock response if API fails
       const aiResponse = generateAIResponse(userMessage)
       setChatMessages((prev) => [...prev, { role: "assistant", content: aiResponse }])
-    } catch (error) {
+      
       toast({
-        title: "AI Assistant Error",
-        description: "Failed to get AI response. Please try again.",
-        variant: "destructive",
+        title: "AI Assistant Notice",
+        description: "Using offline mode. Some features may be limited.",
+        variant: "default",
       })
     } finally {
       setIsLoading(false)
@@ -122,7 +135,7 @@ export function AIAssistantContent() {
         </Badge>
       </motion.div>
 
-      <Tabs defaultValue="chat" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="chat">AI Chat</TabsTrigger>
           <TabsTrigger value="recommendations">Course Recommendations</TabsTrigger>

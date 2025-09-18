@@ -99,6 +99,38 @@ class ApiClient {
 
     return response.blob()
   }
+
+  // AI endpoints
+  async getCourseRecommendations(data: {
+    interests: string[]
+    currentCourses: string[]
+    academicLevel: string
+    careerGoals: string[]
+  }) {
+    return this.request("/ai/recommend", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+  }
+
+  async generateSyllabus(data: {
+    topic: string
+    level: string
+    duration: number | string
+    learningObjectives: string[]
+  }) {
+    return this.request("/ai/syllabus", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+  }
+
+  async chatWithAI(message: string) {
+    return this.request("/ai/chat", {
+      method: "POST",
+      body: JSON.stringify({ message }),
+    })
+  }
 }
 
 export const apiClient = new ApiClient()
