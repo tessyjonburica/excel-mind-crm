@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
-import * as cors from 'cors';
+import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { AppModule } from './app.module';
 

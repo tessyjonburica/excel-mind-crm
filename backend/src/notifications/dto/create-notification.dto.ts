@@ -20,7 +20,7 @@ export class CreateNotificationDto {
 
   @ApiProperty({ 
     enum: NotificationType,
-    example: NotificationType.GRADE
+    example: NotificationType.grade
   })
   @IsEnum(NotificationType)
   type: NotificationType;
